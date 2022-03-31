@@ -17,7 +17,9 @@
 
 package internal
 
-import "sync"
+import (
+	"sync"
+)
 
 var (
 	tenantsMutex sync.RWMutex
@@ -26,18 +28,24 @@ var (
 
 func init() {
 	tenantMap = make(map[string]*tenant)
-	tenantMap["public"] = newTenant("public")
+	publicTenant := newTenant("public")
+	publicTenant.AddNamespace(publicTenant.newNamespace("default"))
+	publicTenant.AddNamespace(publicTenant.newNamespace("functions"))
+	tenantMap["public"] = publicTenant
 	tenantMap["pulsar"] = newTenant("pulsar")
 	tenantMap["sample"] = newTenant("sample")
 }
 
 type tenant struct {
-	name string
+	name         string
+	namespaceMap map[string]*namespace
+	mutex        sync.RWMutex
 }
 
 func newTenant(name string) *tenant {
 	t := &tenant{}
 	t.name = name
+	t.namespaceMap = make(map[string]*namespace)
 	return t
 }
 
@@ -74,6 +82,41 @@ func GetTenantNameList() []string {
 	res := make([]string, 0)
 	for _, val := range tenants {
 		res = append(res, val.name)
+	}
+	return res
+}
+
+func (t *tenant) newNamespace(name string) *namespace {
+	n := &namespace{}
+	n.name = name
+	n.fullName = t.name + "/" + name
+	return n
+}
+
+func (t *tenant) AddNamespace(namespace *namespace) {
+	t.mutex.Lock()
+	t.namespaceMap[namespace.name] = namespace
+	t.mutex.Unlock()
+}
+
+func (t *tenant) DelNamespace(name string) {
+	t.mutex.Lock()
+	delete(t.namespaceMap, name)
+	t.mutex.Unlock()
+}
+
+func (t *tenant) GetNamespace(name string) *namespace {
+	t.mutex.RLock()
+	defer t.mutex.RUnlock()
+	return t.namespaceMap[name]
+}
+
+func (t *tenant) GetNamespaces() []*namespace {
+	t.mutex.RLock()
+	defer t.mutex.RUnlock()
+	res := make([]*namespace, 0)
+	for _, value := range t.namespaceMap {
+		res = append(res, value)
 	}
 	return res
 }

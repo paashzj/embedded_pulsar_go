@@ -46,6 +46,7 @@ func runHttpServer(config Config) {
 func adminV2Router(rg *gin.Engine) {
 	adminV2Group := rg.Group("/admin/v2")
 	tenantRouter(adminV2Group)
+	namespaceRouter(adminV2Group)
 }
 
 func tenantRouter(rg *gin.RouterGroup) *gin.RouterGroup {
@@ -54,6 +55,15 @@ func tenantRouter(rg *gin.RouterGroup) *gin.RouterGroup {
 	tenants.DELETE(":tenants", internal.TenantDeleteHandler)
 	tenants.GET("", internal.TenantsGetHandler)
 	tenants.GET(":tenants", internal.TenantGetHandler)
+	return tenants
+}
+
+func namespaceRouter(rg *gin.RouterGroup) *gin.RouterGroup {
+	tenants := rg.Group("/namespaces")
+	tenants.PUT(":tenant/:namespace", internal.NamespacePutHandler)
+	tenants.DELETE(":tenant/:namespace", internal.NamespaceDeleteHandler)
+	tenants.GET(":tenant", internal.NamespacesGetHandler)
+	tenants.GET(":tenant/:namespace", internal.NamespaceGetHandler)
 	return tenants
 }
 

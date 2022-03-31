@@ -42,3 +42,34 @@ func TenantGetHandler(c *gin.Context) {
 	tenant := c.Param("tenants")
 	c.JSON(http.StatusOK, GetTenant(tenant))
 }
+
+func NamespacePutHandler(c *gin.Context) {
+	tenantParam := c.Param("tenant")
+	namespace := c.Param("namespace")
+	tenant := GetTenant(tenantParam)
+	tenant.AddNamespace(tenant.newNamespace(namespace))
+	c.Status(http.StatusNoContent)
+}
+
+func NamespaceDeleteHandler(c *gin.Context) {
+	tenant := c.Param("tenant")
+	namespace := c.Param("namespace")
+	GetTenant(tenant).DelNamespace(namespace)
+	c.Status(http.StatusNoContent)
+}
+
+func NamespacesGetHandler(c *gin.Context) {
+	tenant := c.Param("tenant")
+	namespaces := GetTenant(tenant).GetNamespaces()
+	res := make([]string, 0)
+	for _, val := range namespaces {
+		res = append(res, val.fullName)
+	}
+	c.JSON(http.StatusOK, res)
+}
+
+func NamespaceGetHandler(c *gin.Context) {
+	tenant := c.Param("tenant")
+	namespace := c.Param("namespace")
+	c.JSON(http.StatusOK, GetTenant(tenant).GetNamespace(namespace))
+}
