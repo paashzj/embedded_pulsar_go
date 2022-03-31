@@ -51,10 +51,10 @@ func adminV2Router(rg *gin.Engine) {
 
 func tenantRouter(rg *gin.RouterGroup) *gin.RouterGroup {
 	tenants := rg.Group("/tenants")
-	tenants.PUT(":tenants", internal.TenantPutHandler)
-	tenants.DELETE(":tenants", internal.TenantDeleteHandler)
+	tenants.PUT(":tenant", internal.TenantPutHandler)
+	tenants.DELETE(":tenant", internal.TenantDeleteHandler)
 	tenants.GET("", internal.TenantsGetHandler)
-	tenants.GET(":tenants", internal.TenantGetHandler)
+	tenants.GET(":tenant", internal.TenantGetHandler)
 	return tenants
 }
 
