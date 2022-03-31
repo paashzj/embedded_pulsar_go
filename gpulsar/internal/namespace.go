@@ -17,7 +17,80 @@
 
 package internal
 
+import "sync"
+
 type namespace struct {
-	name     string
-	fullName string
+	name                             string
+	fullName                         string
+	mutex                            sync.Mutex
+	persistentPartitionedTopicMap    map[string]*persistentPartitionedTopic
+	persistentTopicMap               map[string]*persistentTopic
+	nonPersistentPartitionedTopicMap map[string]*nonPersistentPartitionedTopic
+	nonPersistentTopicMap            map[string]*nonPersistentTopic
+}
+
+func (n *namespace) newPersistentPartitionedTopic(name string, partition int) *persistentPartitionedTopic {
+	p := &persistentPartitionedTopic{}
+	p.name = name
+	p.partition = partition
+	return p
+}
+
+func (n *namespace) newPersistentTopic(name string) *persistentTopic {
+	p := &persistentTopic{}
+	p.name = name
+	return p
+}
+
+func (n *namespace) newNonPersistentPartitionedTopic(name string, partition int) *nonPersistentPartitionedTopic {
+	p := &nonPersistentPartitionedTopic{}
+	p.name = name
+	p.partition = partition
+	return p
+}
+
+func (n *namespace) newNonPersistentTopic(name string) *nonPersistentTopic {
+	p := &nonPersistentTopic{}
+	p.name = name
+	return p
+}
+
+func (n *namespace) GetPersistentPartitionedTopics() []*persistentPartitionedTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	res := make([]*persistentPartitionedTopic, 0)
+	for _, val := range n.persistentPartitionedTopicMap {
+		res = append(res, val)
+	}
+	return res
+}
+
+func (n *namespace) GetPersistentTopics() []*persistentTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	res := make([]*persistentTopic, 0)
+	for _, val := range n.persistentTopicMap {
+		res = append(res, val)
+	}
+	return res
+}
+
+func (n *namespace) GetNonPersistentPartitionedTopics() []*nonPersistentPartitionedTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	res := make([]*nonPersistentPartitionedTopic, 0)
+	for _, val := range n.nonPersistentPartitionedTopicMap {
+		res = append(res, val)
+	}
+	return res
+}
+
+func (n *namespace) GetNonPersistentTopics() []*nonPersistentTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	res := make([]*nonPersistentTopic, 0)
+	for _, val := range n.nonPersistentTopicMap {
+		res = append(res, val)
+	}
+	return res
 }
