@@ -31,4 +31,4 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: latest
-          args: --timeout 3m0s unused
+          args: --timeout 3m0s --disable unused
