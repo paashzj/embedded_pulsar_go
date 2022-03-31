@@ -23,13 +23,13 @@ import (
 )
 
 func TenantPutHandler(c *gin.Context) {
-	tenant := c.Param("tenants")
+	tenant := c.Param("tenant")
 	AddTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
 
 func TenantDeleteHandler(c *gin.Context) {
-	tenant := c.Param("tenants")
+	tenant := c.Param("tenant")
 	DelTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
@@ -39,7 +39,7 @@ func TenantsGetHandler(c *gin.Context) {
 }
 
 func TenantGetHandler(c *gin.Context) {
-	tenant := c.Param("tenants")
+	tenant := c.Param("tenant")
 	c.JSON(http.StatusOK, GetTenant(tenant))
 }
 

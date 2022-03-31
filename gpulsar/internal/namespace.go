@@ -55,6 +55,25 @@ func (n *namespace) newNonPersistentTopic(name string) *nonPersistentTopic {
 	return p
 }
 
+func (n *namespace) AddPersistentPartitionedTopic(name string, partition int) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	partitionedTopic := n.newPersistentPartitionedTopic(name, partition)
+	n.persistentPartitionedTopicMap[name] = partitionedTopic
+}
+
+func (n *namespace) DelPersistentPartitionedTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	delete(n.persistentPartitionedTopicMap, name)
+}
+
+func (n *namespace) GetPersistentPartitionedTopic(name string) *persistentPartitionedTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	return n.persistentPartitionedTopicMap[name]
+}
+
 func (n *namespace) GetPersistentPartitionedTopics() []*persistentPartitionedTopic {
 	n.mutex.Lock()
 	defer n.mutex.Unlock()
@@ -63,6 +82,25 @@ func (n *namespace) GetPersistentPartitionedTopics() []*persistentPartitionedTop
 		res = append(res, val)
 	}
 	return res
+}
+
+func (n *namespace) AddPersistentTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	topic := n.newPersistentTopic(name)
+	n.persistentTopicMap[name] = topic
+}
+
+func (n *namespace) DelPersistentTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	delete(n.persistentTopicMap, name)
+}
+
+func (n *namespace) GetPersistentTopic(name string) *persistentTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	return n.persistentTopicMap[name]
 }
 
 func (n *namespace) GetPersistentTopics() []*persistentTopic {
@@ -75,6 +113,25 @@ func (n *namespace) GetPersistentTopics() []*persistentTopic {
 	return res
 }
 
+func (n *namespace) AddNonPersistentPartitionedTopic(name string, partition int) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	partitionedTopic := n.newNonPersistentPartitionedTopic(name, partition)
+	n.nonPersistentPartitionedTopicMap[name] = partitionedTopic
+}
+
+func (n *namespace) DelNonPersistentPartitionedTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	delete(n.nonPersistentPartitionedTopicMap, name)
+}
+
+func (n *namespace) GetNonPersistentPartitionedTopic(name string) *nonPersistentPartitionedTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	return n.nonPersistentPartitionedTopicMap[name]
+}
+
 func (n *namespace) GetNonPersistentPartitionedTopics() []*nonPersistentPartitionedTopic {
 	n.mutex.Lock()
 	defer n.mutex.Unlock()
@@ -83,6 +140,25 @@ func (n *namespace) GetNonPersistentPartitionedTopics() []*nonPersistentPartitio
 		res = append(res, val)
 	}
 	return res
+}
+
+func (n *namespace) AddNonPersistentTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	topic := n.newNonPersistentTopic(name)
+	n.nonPersistentTopicMap[name] = topic
+}
+
+func (n *namespace) DelNonPersistentTopic(name string) {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	delete(n.nonPersistentTopicMap, name)
+}
+
+func (n *namespace) GetNonPersistentTopic(name string) *nonPersistentTopic {
+	n.mutex.Lock()
+	defer n.mutex.Unlock()
+	return n.nonPersistentTopicMap[name]
 }
 
 func (n *namespace) GetNonPersistentTopics() []*nonPersistentTopic {
