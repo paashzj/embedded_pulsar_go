@@ -29,6 +29,32 @@ type namespace struct {
 	nonPersistentTopicMap            map[string]*nonPersistentTopic
 }
 
+func (n *namespace) newPersistentPartitionedTopic(name string, partition int) *persistentPartitionedTopic {
+	p := &persistentPartitionedTopic{}
+	p.name = name
+	p.partition = partition
+	return p
+}
+
+func (n *namespace) newPersistentTopic(name string) *persistentTopic {
+	p := &persistentTopic{}
+	p.name = name
+	return p
+}
+
+func (n *namespace) newNonPersistentPartitionedTopic(name string, partition int) *nonPersistentPartitionedTopic {
+	p := &nonPersistentPartitionedTopic{}
+	p.name = name
+	p.partition = partition
+	return p
+}
+
+func (n *namespace) newNonPersistentTopic(name string) *nonPersistentTopic {
+	p := &nonPersistentTopic{}
+	p.name = name
+	return p
+}
+
 func (n *namespace) GetPersistentPartitionedTopics() []*persistentPartitionedTopic {
 	n.mutex.Lock()
 	defer n.mutex.Unlock()
