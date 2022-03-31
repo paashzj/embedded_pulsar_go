@@ -15,46 +15,65 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package tenants
+package internal
 
 import "sync"
 
 var (
-	mutex     sync.RWMutex
-	tenantMap map[string]string
+	tenantsMutex sync.RWMutex
+	tenantMap    map[string]*tenant
 )
 
 func init() {
-	tenantMap = make(map[string]string)
-	tenantMap["public"] = "public"
-	tenantMap["pulsar"] = "pulsar"
-	tenantMap["sample"] = "sample"
+	tenantMap = make(map[string]*tenant)
+	tenantMap["public"] = newTenant("public")
+	tenantMap["pulsar"] = newTenant("pulsar")
+	tenantMap["sample"] = newTenant("sample")
 }
 
-func AddTenant(tenant string) {
-	mutex.Lock()
-	tenantMap[tenant] = tenant
-	mutex.Unlock()
+type tenant struct {
+	name string
+}
+
+func newTenant(name string) *tenant {
+	t := &tenant{}
+	t.name = name
+	return t
+}
+
+func AddTenant(name string) {
+	tenantsMutex.Lock()
+	tenantMap[name] = newTenant(name)
+	tenantsMutex.Unlock()
 }
 
 func DelTenant(tenant string) {
-	mutex.Lock()
+	tenantsMutex.Lock()
 	delete(tenantMap, tenant)
-	mutex.Unlock()
+	tenantsMutex.Unlock()
 }
 
-func GetTenant(tenant string) string {
-	mutex.RLock()
-	defer mutex.RUnlock()
-	return tenantMap[tenant]
+func GetTenant(name string) *tenant {
+	tenantsMutex.RLock()
+	defer tenantsMutex.RUnlock()
+	return tenantMap[name]
 }
 
-func GetTenants() []string {
-	mutex.RLock()
-	defer mutex.RUnlock()
-	res := make([]string, 0)
+func GetTenants() []*tenant {
+	tenantsMutex.RLock()
+	defer tenantsMutex.RUnlock()
+	res := make([]*tenant, 0)
 	for _, value := range tenantMap {
 		res = append(res, value)
+	}
+	return res
+}
+
+func GetTenantNameList() []string {
+	tenants := GetTenants()
+	res := make([]string, 0)
+	for _, val := range tenants {
+		res = append(res, val.name)
 	}
 	return res
 }
