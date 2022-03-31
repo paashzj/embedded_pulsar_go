@@ -22,7 +22,6 @@ package com.github.gpulsar;
 import org.apache.pulsar.client.admin.PulsarAdminException;
 import org.apache.pulsar.client.api.PulsarClientException;
 import org.apache.pulsar.common.policies.data.TenantInfo;
-import org.apache.pulsar.common.policies.data.TenantInfoImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -44,6 +43,8 @@ public class PulsarTenantTest extends BaseTest {
                 .allowedClusters(Collections.singleton("standalone"))
                 .build());
         Assertions.assertEquals(4, pulsarAdmin.tenants().getTenants().size());
+        TenantInfo tenantInfo = pulsarAdmin.tenants().getTenantInfo("alice");
+        Assertions.assertNotNull(tenantInfo);
         pulsarAdmin.tenants().deleteTenant("alice");
         Assertions.assertEquals(3, pulsarAdmin.tenants().getTenants().size());
     }

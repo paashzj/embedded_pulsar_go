@@ -18,28 +18,27 @@
 package internal
 
 import (
-	"embedded_pulsar_go/gpulsar/internal/tenants"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func TenantPutHandler(c *gin.Context) {
 	tenant := c.Param("tenants")
-	tenants.AddTenant(tenant)
+	AddTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
 
 func TenantDeleteHandler(c *gin.Context) {
 	tenant := c.Param("tenants")
-	tenants.DelTenant(tenant)
+	DelTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
 
 func TenantsGetHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, tenants.GetTenants())
+	c.JSON(http.StatusOK, GetTenantNameList())
 }
 
 func TenantGetHandler(c *gin.Context) {
 	tenant := c.Param("tenants")
-	c.JSON(http.StatusOK, tenants.GetTenant(tenant))
+	c.JSON(http.StatusOK, GetTenant(tenant))
 }
