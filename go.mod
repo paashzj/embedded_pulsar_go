@@ -3,7 +3,7 @@ module embedded_pulsar_go
 go 1.18
 
 require (
-	github.com/gin-gonic/gin v1.8.0
+	github.com/gin-gonic/gin v1.8.1
 	github.com/gogo/protobuf v1.3.2
 	github.com/paashzj/pulsar_proto_go v0.0.0-20220317131658-a079cc6af64d
 	github.com/panjf2000/gnet v1.6.5
