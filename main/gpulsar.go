@@ -29,7 +29,11 @@ func main() {
 	config.ListenHost = util.GetEnvStr("GPULSAR_LISTEN_HOST", "0.0.0.0")
 	config.ListenTcpPort = util.GetEnvInt("GPULSAR_LISTEN_TCP_PORT", 6650)
 	config.ListenHttpPort = util.GetEnvInt("GPULSAR_LISTEN_HTTP_PORT", 8080)
-	err := gpulsar.Run(config)
+	server, err := gpulsar.NewPulsarServer(&config)
+	if err != nil {
+		panic(err)
+	}
+	err = server.Run(config)
 	if err != nil {
 		panic(err)
 	}

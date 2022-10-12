@@ -15,10 +15,9 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package internal
+package gpulsar
 
-import pb "github.com/paashzj/pulsar_proto_go"
-
-type PulsarServer interface {
-	Connect(connect *pb.CommandConnect) (*pb.CommandConnected, error)
+type persistentTopic struct {
+	name     string
+	fullName string
 }

@@ -15,9 +15,10 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package internal
+package gpulsar
 
-type persistentTopic struct {
-	name     string
-	fullName string
+type persistentPartitionedTopic struct {
+	name      string
+	fullName  string
+	partition int
 }

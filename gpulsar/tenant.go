@@ -15,26 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package internal
+package gpulsar
 
 import (
 	"sync"
 )
-
-var (
-	tenantsMutex sync.RWMutex
-	tenantMap    map[string]*tenant
-)
-
-func init() {
-	tenantMap = make(map[string]*tenant)
-	publicTenant := newTenant("public")
-	publicTenant.AddNamespace(publicTenant.newNamespace("default"))
-	publicTenant.AddNamespace(publicTenant.newNamespace("functions"))
-	tenantMap["public"] = publicTenant
-	tenantMap["pulsar"] = newTenant("pulsar")
-	tenantMap["sample"] = newTenant("sample")
-}
 
 type tenant struct {
 	name         string
@@ -49,36 +34,36 @@ func newTenant(name string) *tenant {
 	return t
 }
 
-func AddTenant(name string) {
-	tenantsMutex.Lock()
-	tenantMap[name] = newTenant(name)
-	tenantsMutex.Unlock()
+func (p *PulsarServer) AddTenant(name string) {
+	p.tenantsMutex.Lock()
+	p.tenantMap[name] = newTenant(name)
+	p.tenantsMutex.Unlock()
 }
 
-func DelTenant(tenant string) {
-	tenantsMutex.Lock()
-	delete(tenantMap, tenant)
-	tenantsMutex.Unlock()
+func (p *PulsarServer) DelTenant(tenant string) {
+	p.tenantsMutex.Lock()
+	delete(p.tenantMap, tenant)
+	p.tenantsMutex.Unlock()
 }
 
-func GetTenant(name string) *tenant {
-	tenantsMutex.RLock()
-	defer tenantsMutex.RUnlock()
-	return tenantMap[name]
+func (p *PulsarServer) GetTenant(name string) *tenant {
+	p.tenantsMutex.RLock()
+	defer p.tenantsMutex.RUnlock()
+	return p.tenantMap[name]
 }
 
-func GetTenants() []*tenant {
-	tenantsMutex.RLock()
-	defer tenantsMutex.RUnlock()
+func (p *PulsarServer) GetTenants() []*tenant {
+	p.tenantsMutex.RLock()
+	defer p.tenantsMutex.RUnlock()
 	res := make([]*tenant, 0)
-	for _, value := range tenantMap {
+	for _, value := range p.tenantMap {
 		res = append(res, value)
 	}
 	return res
 }
 
-func GetTenantNameList() []string {
-	tenants := GetTenants()
+func (p *PulsarServer) GetTenantNameList() []string {
+	tenants := p.GetTenants()
 	res := make([]string, 0)
 	for _, val := range tenants {
 		res = append(res, val.name)

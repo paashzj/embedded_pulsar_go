@@ -22,7 +22,6 @@ COPY . /opt/sh/compile
 WORKDIR /opt/sh/compile/main
 RUN go build -o embedded_pulsar .
 
-
 FROM ttbb/base
 
 COPY --from=build /opt/sh/compile/main/embedded_pulsar /opt/sh/embedded_pulsar

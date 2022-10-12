@@ -37,7 +37,7 @@ jobs:
           distribution: 'temurin'
       - name: build image
         run: docker build . -t gpulsar-standalone
-      - name: run embeded pulsar
+      - name: run embedded pulsar
         run: docker run -p 6650:6650 -p 8080:8080 -d gpulsar-standalone
       - name: wait gpulsar start
         run: sleep 30
