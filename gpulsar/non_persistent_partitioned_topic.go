@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package internal
+package gpulsar
 
 type nonPersistentPartitionedTopic struct {
 	name      string

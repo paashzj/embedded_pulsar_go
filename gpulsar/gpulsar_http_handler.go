@@ -15,52 +15,52 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package internal
+package gpulsar
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func TenantPutHandler(c *gin.Context) {
+func (p *PulsarServer) TenantPutHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
-	AddTenant(tenant)
+	p.AddTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
 
-func TenantDeleteHandler(c *gin.Context) {
+func (p *PulsarServer) TenantDeleteHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
-	DelTenant(tenant)
+	p.DelTenant(tenant)
 	c.Status(http.StatusNoContent)
 }
 
-func TenantsGetHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, GetTenantNameList())
+func (p *PulsarServer) TenantsGetHandler(c *gin.Context) {
+	c.JSON(http.StatusOK, p.GetTenantNameList())
 }
 
-func TenantGetHandler(c *gin.Context) {
+func (p *PulsarServer) TenantGetHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
-	c.JSON(http.StatusOK, GetTenant(tenant))
+	c.JSON(http.StatusOK, p.GetTenant(tenant))
 }
 
-func NamespacePutHandler(c *gin.Context) {
+func (p *PulsarServer) NamespacePutHandler(c *gin.Context) {
 	tenantParam := c.Param("tenant")
 	namespace := c.Param("namespace")
-	tenant := GetTenant(tenantParam)
+	tenant := p.GetTenant(tenantParam)
 	tenant.AddNamespace(tenant.newNamespace(namespace))
 	c.Status(http.StatusNoContent)
 }
 
-func NamespaceDeleteHandler(c *gin.Context) {
+func (p *PulsarServer) NamespaceDeleteHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
 	namespace := c.Param("namespace")
-	GetTenant(tenant).DelNamespace(namespace)
+	p.GetTenant(tenant).DelNamespace(namespace)
 	c.Status(http.StatusNoContent)
 }
 
-func NamespacesGetHandler(c *gin.Context) {
+func (p *PulsarServer) NamespacesGetHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
-	namespaces := GetTenant(tenant).GetNamespaces()
+	namespaces := p.GetTenant(tenant).GetNamespaces()
 	res := make([]string, 0)
 	for _, val := range namespaces {
 		res = append(res, val.fullName)
@@ -68,8 +68,8 @@ func NamespacesGetHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func NamespaceGetHandler(c *gin.Context) {
+func (p *PulsarServer) NamespaceGetHandler(c *gin.Context) {
 	tenant := c.Param("tenant")
 	namespace := c.Param("namespace")
-	c.JSON(http.StatusOK, GetTenant(tenant).GetNamespace(namespace))
+	c.JSON(http.StatusOK, p.GetTenant(tenant).GetNamespace(namespace))
 }
